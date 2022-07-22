@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>6 支撑向量机 | 机器学习白板系列</title>
+  <meta name="description" content="这是用R的bookdown功能制作中文图书的模板，输出格式为bookdown::gitbook和bookdown::pdf_book." />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="6 支撑向量机 | 机器学习白板系列" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="这是用R的bookdown功能制作中文图书的模板，输出格式为bookdown::gitbook和bookdown::pdf_book." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6 支撑向量机 | 机器学习白板系列" />
+  
+  <meta name="twitter:description" content="这是用R的bookdown功能制作中文图书的模板，输出格式为bookdown::gitbook和bookdown::pdf_book." />
+  
+
+<meta name="author" content="庄闪闪" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="降维.html"/>
+<link rel="next" href="指数族分布.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX","output/SVG"],
+  extensions: ["tex2jax.js","MathMenu.js","MathZoom.js"],
+  TeX: {
+    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+  }
+});
+</script>
+<script type="text/javascript"
+   src="../../../MathJax/MathJax.js">
+</script>
+
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>简介</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#频率派的观点"><i class="fa fa-check"></i><b>1.1</b> 频率派的观点</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#贝叶斯派的观点"><i class="fa fa-check"></i><b>1.2</b> 贝叶斯派的观点</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#小结"><i class="fa fa-check"></i><b>1.3</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="mathbasics.html"><a href="mathbasics.html"><i class="fa fa-check"></i><b>2</b> MathBasics</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="mathbasics.html"><a href="mathbasics.html#高斯分布"><i class="fa fa-check"></i><b>2.1</b> 高斯分布</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="mathbasics.html"><a href="mathbasics.html#一维情况-mle"><i class="fa fa-check"></i><b>2.1.1</b> 一维情况 MLE</a></li>
+<li class="chapter" data-level="2.1.2" data-path="mathbasics.html"><a href="mathbasics.html#多维情况"><i class="fa fa-check"></i><b>2.1.2</b> 多维情况</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="线性回归.html"><a href="线性回归.html"><i class="fa fa-check"></i><b>3</b> 线性回归</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="线性回归.html"><a href="线性回归.html#最小二乘法"><i class="fa fa-check"></i><b>3.1</b> 最小二乘法</a></li>
+<li class="chapter" data-level="3.2" data-path="线性回归.html"><a href="线性回归.html#噪声为高斯分布的-mle"><i class="fa fa-check"></i><b>3.2</b> 噪声为高斯分布的 MLE</a></li>
+<li class="chapter" data-level="3.3" data-path="线性回归.html"><a href="线性回归.html#权重先验也为高斯分布的-map"><i class="fa fa-check"></i><b>3.3</b> 权重先验也为高斯分布的 MAP</a></li>
+<li class="chapter" data-level="3.4" data-path="线性回归.html"><a href="线性回归.html#正则化"><i class="fa fa-check"></i><b>3.4</b> 正则化</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="线性回归.html"><a href="线性回归.html#l1-lasso"><i class="fa fa-check"></i><b>3.4.1</b> L1 Lasso</a></li>
+<li class="chapter" data-level="3.4.2" data-path="线性回归.html"><a href="线性回归.html#l2-ridge"><i class="fa fa-check"></i><b>3.4.2</b> L2 Ridge</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="线性回归.html"><a href="线性回归.html#小结-1"><i class="fa fa-check"></i><b>3.5</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="线性分类.html"><a href="线性分类.html"><i class="fa fa-check"></i><b>4</b> 线性分类</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="线性分类.html"><a href="线性分类.html#两分类-硬分类-感知机算法"><i class="fa fa-check"></i><b>4.1</b> 两分类-硬分类-感知机算法</a></li>
+<li class="chapter" data-level="4.2" data-path="线性分类.html"><a href="线性分类.html#两分类-硬分类-线性判别分析-lda"><i class="fa fa-check"></i><b>4.2</b> 两分类-硬分类-线性判别分析 LDA</a></li>
+<li class="chapter" data-level="4.3" data-path="线性分类.html"><a href="线性分类.html#两分类-软分类-概率判别模型-logistic-回归"><i class="fa fa-check"></i><b>4.3</b> 两分类-软分类-概率判别模型-Logistic 回归</a></li>
+<li class="chapter" data-level="4.4" data-path="线性分类.html"><a href="线性分类.html#两分类-软分类-概率生成模型-高斯判别分析-gda"><i class="fa fa-check"></i><b>4.4</b> 两分类-软分类-概率生成模型-高斯判别分析 GDA</a></li>
+<li class="chapter" data-level="4.5" data-path="线性分类.html"><a href="线性分类.html#两分类-软分类-概率生成模型-朴素贝叶斯"><i class="fa fa-check"></i><b>4.5</b> 两分类-软分类-概率生成模型-朴素贝叶斯</a></li>
+<li class="chapter" data-level="4.6" data-path="线性分类.html"><a href="线性分类.html#小结-2"><i class="fa fa-check"></i><b>4.6</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="降维.html"><a href="降维.html"><i class="fa fa-check"></i><b>5</b> 降维</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="降维.html"><a href="降维.html#线性降维-主成分分析-pca"><i class="fa fa-check"></i><b>5.1</b> 线性降维-主成分分析 PCA</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="降维.html"><a href="降维.html#损失函数"><i class="fa fa-check"></i><b>5.1.1</b> 损失函数</a></li>
+<li class="chapter" data-level="5.1.2" data-path="降维.html"><a href="降维.html#svd-与-pcoa"><i class="fa fa-check"></i><b>5.1.2</b> SVD 与 PCoA</a></li>
+<li class="chapter" data-level="5.1.3" data-path="降维.html"><a href="降维.html#p-pca"><i class="fa fa-check"></i><b>5.1.3</b> p-PCA</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="降维.html"><a href="降维.html#小结-3"><i class="fa fa-check"></i><b>5.2</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="支撑向量机.html"><a href="支撑向量机.html"><i class="fa fa-check"></i><b>6</b> 支撑向量机</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="支撑向量机.html"><a href="支撑向量机.html#约束优化问题"><i class="fa fa-check"></i><b>6.1</b> 约束优化问题</a></li>
+<li class="chapter" data-level="6.2" data-path="支撑向量机.html"><a href="支撑向量机.html#hard-margin-svm"><i class="fa fa-check"></i><b>6.2</b> Hard-margin SVM</a></li>
+<li class="chapter" data-level="6.3" data-path="支撑向量机.html"><a href="支撑向量机.html#soft-margin-svm"><i class="fa fa-check"></i><b>6.3</b> Soft-margin SVM</a></li>
+<li class="chapter" data-level="6.4" data-path="支撑向量机.html"><a href="支撑向量机.html#kernel-method"><i class="fa fa-check"></i><b>6.4</b> Kernel Method</a></li>
+<li class="chapter" data-level="6.5" data-path="支撑向量机.html"><a href="支撑向量机.html#小结-4"><i class="fa fa-check"></i><b>6.5</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="指数族分布.html"><a href="指数族分布.html"><i class="fa fa-check"></i><b>7</b> 指数族分布</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="指数族分布.html"><a href="指数族分布.html#一维高斯分布"><i class="fa fa-check"></i><b>7.1</b> 一维高斯分布</a></li>
+<li class="chapter" data-level="7.2" data-path="指数族分布.html"><a href="指数族分布.html#充分统计量和对数配分函数的关系"><i class="fa fa-check"></i><b>7.2</b> 充分统计量和对数配分函数的关系</a></li>
+<li class="chapter" data-level="7.3" data-path="指数族分布.html"><a href="指数族分布.html#充分统计量和极大似然估计"><i class="fa fa-check"></i><b>7.3</b> 充分统计量和极大似然估计</a></li>
+<li class="chapter" data-level="7.4" data-path="指数族分布.html"><a href="指数族分布.html#最大熵"><i class="fa fa-check"></i><b>7.4</b> 最大熵</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="概率图模型.html"><a href="概率图模型.html"><i class="fa fa-check"></i><b>8</b> 概率图模型</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="概率图模型.html"><a href="概率图模型.html#有向图-贝叶斯网络"><i class="fa fa-check"></i><b>8.1</b> 有向图-贝叶斯网络</a></li>
+<li class="chapter" data-level="8.2" data-path="概率图模型.html"><a href="概率图模型.html#无向图-马尔可夫网络马尔可夫随机场"><i class="fa fa-check"></i><b>8.2</b> 无向图-马尔可夫网络（马尔可夫随机场）</a></li>
+<li class="chapter" data-level="8.3" data-path="概率图模型.html"><a href="概率图模型.html#两种图的转换-道德图"><i class="fa fa-check"></i><b>8.3</b> 两种图的转换-道德图</a></li>
+<li class="chapter" data-level="8.4" data-path="概率图模型.html"><a href="概率图模型.html#更精细的分解-因子图"><i class="fa fa-check"></i><b>8.4</b> 更精细的分解-因子图</a></li>
+<li class="chapter" data-level="8.5" data-path="概率图模型.html"><a href="概率图模型.html#推断"><i class="fa fa-check"></i><b>8.5</b> 推断</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="概率图模型.html"><a href="概率图模型.html#推断-变量消除ve"><i class="fa fa-check"></i><b>8.5.1</b> 推断-变量消除（VE）</a></li>
+<li class="chapter" data-level="8.5.2" data-path="概率图模型.html"><a href="概率图模型.html#推断-信念传播bp"><i class="fa fa-check"></i><b>8.5.2</b> 推断-信念传播（BP）</a></li>
+<li class="chapter" data-level="8.5.3" data-path="概率图模型.html"><a href="概率图模型.html#推断-max-product-算法"><i class="fa fa-check"></i><b>8.5.3</b> 推断-Max-Product 算法</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="期望最大.html"><a href="期望最大.html"><i class="fa fa-check"></i><b>9</b> 期望最大</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="期望最大.html"><a href="期望最大.html#广义-em"><i class="fa fa-check"></i><b>9.1</b> 广义 EM</a></li>
+<li class="chapter" data-level="9.2" data-path="期望最大.html"><a href="期望最大.html#em-的推广"><i class="fa fa-check"></i><b>9.2</b> EM 的推广</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="高斯混合模型.html"><a href="高斯混合模型.html"><i class="fa fa-check"></i><b>10</b> 高斯混合模型</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="高斯混合模型.html"><a href="高斯混合模型.html#极大似然估计"><i class="fa fa-check"></i><b>10.1</b> 极大似然估计</a></li>
+<li class="chapter" data-level="10.2" data-path="高斯混合模型.html"><a href="高斯混合模型.html#em-求解-gmm"><i class="fa fa-check"></i><b>10.2</b> EM 求解 GMM</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="变分推断.html"><a href="变分推断.html"><i class="fa fa-check"></i><b>11</b> 变分推断</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="变分推断.html"><a href="变分推断.html#基于平均场假设的变分推断"><i class="fa fa-check"></i><b>11.1</b> 基于平均场假设的变分推断</a></li>
+<li class="chapter" data-level="11.2" data-path="变分推断.html"><a href="变分推断.html#sgvi"><i class="fa fa-check"></i><b>11.2</b> SGVI</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html"><i class="fa fa-check"></i><b>12</b> 马尔可夫链蒙特卡洛</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#蒙特卡洛方法"><i class="fa fa-check"></i><b>12.1</b> 蒙特卡洛方法</a></li>
+<li class="chapter" data-level="12.2" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#mcmc"><i class="fa fa-check"></i><b>12.2</b> MCMC</a></li>
+<li class="chapter" data-level="12.3" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#平稳分布"><i class="fa fa-check"></i><b>12.3</b> 平稳分布</a></li>
+<li class="chapter" data-level="12.4" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#隐马尔可夫模型"><i class="fa fa-check"></i><b>12.4</b> 隐马尔可夫模型</a></li>
+<li class="chapter" data-level="12.5" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#hmm"><i class="fa fa-check"></i><b>12.5</b> HMM</a>
+<ul>
+<li class="chapter" data-level="12.5.1" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#evaluation"><i class="fa fa-check"></i><b>12.5.1</b> Evaluation</a></li>
+<li class="chapter" data-level="12.5.2" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#learning"><i class="fa fa-check"></i><b>12.5.2</b> Learning</a></li>
+<li class="chapter" data-level="12.5.3" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#decoding"><i class="fa fa-check"></i><b>12.5.3</b> Decoding</a></li>
+</ul></li>
+<li class="chapter" data-level="12.6" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#小结-5"><i class="fa fa-check"></i><b>12.6</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="线性动态系统.html"><a href="线性动态系统.html"><i class="fa fa-check"></i><b>13</b> 线性动态系统</a></li>
+<li class="chapter" data-level="14" data-path="粒子滤波.html"><a href="粒子滤波.html"><i class="fa fa-check"></i><b>14</b> 粒子滤波</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="粒子滤波.html"><a href="粒子滤波.html#sis"><i class="fa fa-check"></i><b>14.1</b> SIS</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="条件随机场.html"><a href="条件随机场.html"><i class="fa fa-check"></i><b>15</b> 条件随机场</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="条件随机场.html"><a href="条件随机场.html#crf-的-pdf"><i class="fa fa-check"></i><b>15.1</b> CRF 的 PDF</a></li>
+<li class="chapter" data-level="15.2" data-path="条件随机场.html"><a href="条件随机场.html#边缘概率"><i class="fa fa-check"></i><b>15.2</b> 边缘概率</a></li>
+<li class="chapter" data-level="15.3" data-path="条件随机场.html"><a href="条件随机场.html#参数估计"><i class="fa fa-check"></i><b>15.3</b> 参数估计</a></li>
+<li class="chapter" data-level="15.4" data-path="条件随机场.html"><a href="条件随机场.html#译码"><i class="fa fa-check"></i><b>15.4</b> 译码</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="高斯网络.html"><a href="高斯网络.html"><i class="fa fa-check"></i><b>16</b> 高斯网络</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="高斯网络.html"><a href="高斯网络.html#高斯贝叶斯网络-gbn"><i class="fa fa-check"></i><b>16.1</b> 高斯贝叶斯网络 GBN</a></li>
+<li class="chapter" data-level="16.2" data-path="高斯网络.html"><a href="高斯网络.html#高斯马尔可夫网络-gmn"><i class="fa fa-check"></i><b>16.2</b> 高斯马尔可夫网络 GMN</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="贝叶斯线性回归.html"><a href="贝叶斯线性回归.html"><i class="fa fa-check"></i><b>17</b> 贝叶斯线性回归</a>
+<ul>
+<li class="chapter" data-level="17.1" data-path="贝叶斯线性回归.html"><a href="贝叶斯线性回归.html#推断-1"><i class="fa fa-check"></i><b>17.1</b> 推断</a></li>
+<li class="chapter" data-level="17.2" data-path="贝叶斯线性回归.html"><a href="贝叶斯线性回归.html#预测"><i class="fa fa-check"></i><b>17.2</b> 预测</a></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="高斯过程回归.html"><a href="高斯过程回归.html"><i class="fa fa-check"></i><b>18</b> 高斯过程回归</a>
+<ul>
+<li class="chapter" data-level="18.1" data-path="高斯过程回归.html"><a href="高斯过程回归.html#核贝叶斯线性回归"><i class="fa fa-check"></i><b>18.1</b> 核贝叶斯线性回归</a></li>
+<li class="chapter" data-level="18.2" data-path="高斯过程回归.html"><a href="高斯过程回归.html#函数空间的观点"><i class="fa fa-check"></i><b>18.2</b> 函数空间的观点</a></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="受限玻尔兹曼机.html"><a href="受限玻尔兹曼机.html"><i class="fa fa-check"></i><b>19</b> 受限玻尔兹曼机</a>
+<ul>
+<li class="chapter" data-level="19.1" data-path="受限玻尔兹曼机.html"><a href="受限玻尔兹曼机.html#推断-2"><i class="fa fa-check"></i><b>19.1</b> 推断</a>
+<ul>
+<li class="chapter" data-level="19.1.1" data-path="受限玻尔兹曼机.html"><a href="受限玻尔兹曼机.html#phv"><i class="fa fa-check"></i><b>19.1.1</b> <span class="math inline">\(p(h|v)\)</span></a></li>
+<li class="chapter" data-level="19.1.2" data-path="受限玻尔兹曼机.html"><a href="受限玻尔兹曼机.html#pv"><i class="fa fa-check"></i><b>19.1.2</b> <span class="math inline">\(p(v)\)</span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="20" data-path="谱聚类.html"><a href="谱聚类.html"><i class="fa fa-check"></i><b>20</b> 谱聚类</a></li>
+<li class="chapter" data-level="21" data-path="前馈神经网络.html"><a href="前馈神经网络.html"><i class="fa fa-check"></i><b>21</b> 前馈神经网络</a>
+<ul>
+<li class="chapter" data-level="21.1" data-path="前馈神经网络.html"><a href="前馈神经网络.html#from-pla-to-dl"><i class="fa fa-check"></i><b>21.1</b> From PLA to DL</a></li>
+<li class="chapter" data-level="21.2" data-path="前馈神经网络.html"><a href="前馈神经网络.html#非线性问题"><i class="fa fa-check"></i><b>21.2</b> 非线性问题</a></li>
+</ul></li>
+<li class="chapter" data-level="22" data-path="配分函数.html"><a href="配分函数.html"><i class="fa fa-check"></i><b>22</b> 配分函数</a>
+<ul>
+<li class="chapter" data-level="22.1" data-path="配分函数.html"><a href="配分函数.html#包含配分函数的-mle"><i class="fa fa-check"></i><b>22.1</b> 包含配分函数的 MLE</a></li>
+<li class="chapter" data-level="22.2" data-path="配分函数.html"><a href="配分函数.html#对比散度-cd-learning"><i class="fa fa-check"></i><b>22.2</b> 对比散度-CD Learning</a></li>
+<li class="chapter" data-level="22.3" data-path="配分函数.html"><a href="配分函数.html#rbm-的学习问题"><i class="fa fa-check"></i><b>22.3</b> RBM 的学习问题</a></li>
+</ul></li>
+<li class="chapter" data-level="23" data-path="近似推断.html"><a href="近似推断.html"><i class="fa fa-check"></i><b>23</b> 近似推断</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">机器学习白板系列</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="支撑向量机" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">6</span> 支撑向量机<a href="支撑向量机.html#支撑向量机" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>支撑向量机（SVM）算法在分类问题中有着重要地位，其主要思想是最大化两类之间的间隔。按照数据集的特点：</p>
+<ol style="list-style-type: decimal">
+<li>线性可分问题，如之前的感知机算法处理的问题</li>
+<li>线性可分，只有一点点错误点，如感知机算法发展出来的 Pocket 算法处理的问题</li>
+<li>非线性问题，完全不可分，如在感知机问题发展出来的多层感知机和深度学习</li>
+</ol>
+<p>这三种情况对于 SVM 分别有下面三种处理手段：</p>
+<ol style="list-style-type: decimal">
+<li>hard-margin SVM</li>
+<li>soft-margin SVM</li>
+<li>kernel Method</li>
+</ol>
+<p>SVM 的求解中，大量用到了 Lagrange 乘子法，首先对这种方法进行介绍。</p>
+<div id="约束优化问题" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> 约束优化问题<a href="支撑向量机.html#约束优化问题" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>一般地，约束优化问题（原问题）可以写成：
+$$
+<span class="math display">\[\begin{align}
+
+&amp;\min_{x\in\mathbb{R^p}}f(x)\\
+&amp;s.t.\ m_i(x)\le0,i=1,2,\cdots,M\\
+&amp;\ \ \ \ \ \ \ \ n_j(x)=0,j=1,2,\cdots,N
+
+\end{align}\]</span>
+<span class="math display">\[
+定义 Lagrange 函数：
+\]</span>
+L(x,,)=f(x)+<em>{i=1}<sup>M<em>im_i(x)+</em>{i=1}</sup>N<em>in_i(x)
+<span class="math display">\[
+那么原问题可以等价于无约束形式：
+\]</span>
+</em>{x^p}</em>{,}L(x,,) s.t. _i
+$$
+这是由于，当满足原问题的不等式约束的时候，<span class="math inline">\(\lambda_i=0\)</span> 才能取得最大值，直接等价于原问题，如果不满足原问题的不等式约束，那么最大值就为 <span class="math inline">\(+\infin\)</span>，由于需要取最小值，于是不会取到这个情况。</p>
+<p>这个问题的对偶形式：
+<span class="math display">\[
+\max_{\lambda,\eta}\min_{x\in\mathbb{R}^p}L(x,\lambda,\eta)\ s.t.\ \lambda_i\ge0
+\]</span>
+对偶问题是关于 $ , $ 的最大化问题。</p>
+<p>由于：
+<span class="math display">\[
+\max_{\lambda_i,\eta_j}\min_{x}L(x,\lambda_i,\eta_j)\le\min_{x}\max_{\lambda_i,\eta_j}L(x,\lambda_i,\eta_j)
+\]</span></p>
+<blockquote>
+<p>证明：显然有 <span class="math inline">\(\min\limits_{x}L\le L\le\max\limits_{\lambda,\eta}L\)</span>，于是显然有 <span class="math inline">\(\max\limits_{\lambda,\eta}\min\limits_{x}L\le L\)</span>，且 <span class="math inline">\(\min\limits_{x}\max\limits_{\lambda,\eta}L\ge L\)</span>。</p>
+</blockquote>
+<p>对偶问题的解小于原问题，有两种情况：</p>
+<ol style="list-style-type: decimal">
+<li>强对偶：可以取等于号</li>
+<li>弱对偶：不可以取等于号</li>
+</ol>
+<p>其实这一点也可以通过一张图来说明：</p>
+<div class="figure">
+<img src="originVSdual.jpg" alt="" />
+<p class="caption">originVsdual</p>
+</div>
+<p>对于一个凸优化问题，有如下定理：</p>
+<blockquote>
+<p>如果凸优化问题满足某些条件如 Slater 条件，那么它和其对偶问题满足强对偶关系。记问题的定义域为：<span class="math inline">\(\mathcal{D}=domf(x)\cap dom m_i(x)\cap domn_j(x)\)</span>。于是 Slater 条件为：
+<span class="math display">\[
+  \exist\hat{x}\in Relint\mathcal{D}\ s.t.\ \forall i=1,2,\cdots,M,m_i(x)\lt0
+  \]</span>
+其中 Relint 表示相对内部（不包含边界的内部）。</p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>对于大多数凸优化问题，Slater 条件成立。</li>
+<li>松弛 Slater 条件，如果 M 个不等式约束中，有 K 个函数为仿射函数，那么只要其余的函数满足 Slater 条件即可。</li>
+</ol>
+<p>上面介绍了原问题和对偶问题的对偶关系，但是实际还需要对参数进行求解，求解方法使用 KKT 条件进行：</p>
+<blockquote>
+<p>KKT 条件和强对偶关系是等价关系。KKT 条件对最优解的条件为：</p>
+<ol style="list-style-type: decimal">
+<li><p>可行域：
+<span class="math display">\[
+\begin{align}
+m_i(x^*)\le0\\
+n_j(x^*)=0\\
+\lambda^*\ge0
+\end{align}
+\]</span></p></li>
+<li><p>互补松弛 <span class="math inline">\(\lambda^*m_i(x^*)=0,\forall m_i\)</span>，对偶问题的最佳值为 <span class="math inline">\(d^*\)</span>，原问题为 <span class="math inline">\(p^*\)</span>
+<span class="math display">\[
+\begin{align}
+d^*&amp;=\max_{\lambda,\eta}g(\lambda,\eta)=g(\lambda^*,\eta^*)\nonumber\\
+&amp;=\min_{x}L(x,\lambda^*,\eta^*)\nonumber\\
+&amp;\le L(x^*,\lambda^*,\eta^*)\nonumber\\
+&amp;=f(x^*)+\sum\limits_{i=1}^M\lambda^*m_i(x^*)\nonumber\\
+&amp;\le f(x^*)=p^*
+\end{align}
+\]</span>
+为了满足相等，两个不等式必须成立，于是，对于第一个不等于号，需要有梯度为0条件，对于第二个不等于号需要满足互补松弛条件。</p></li>
+<li><p>梯度为0：<span class="math inline">\(\frac{\partial L(x,\lambda^*,\eta^*)}{\partial x}|_{x=x^*}=0\)</span></p></li>
+</ol>
+</blockquote>
+</div>
+<div id="hard-margin-svm" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Hard-margin SVM<a href="支撑向量机.html#hard-margin-svm" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>支撑向量机也是一种硬分类模型，在之前的感知机模型中，我们在线性模型的基础上叠加了符号函数，在几何直观上，可以看到，如果两类分的很开的话，那么其实会存在无穷多条线可以将两类分开。在 SVM 中，我们引入最大化间隔这个概念，间隔指的是数据和直线的距离的最小值，因此最大化这个值反映了我们的模型倾向。</p>
+<p>分割的超平面可以写为：
+<span class="math display">\[
+0=w^Tx+b
+\]</span>
+那么最大化间隔（约束为分类任务的要求）：
+<span class="math display">\[
+\mathop{argmax}_{w,b}[\min_i\frac{|w^Tx_i+b|}{||w||}]\ s.t.\ y_i(w^Tx_i+b)&gt;0\\
+\Longrightarrow\mathop{argmax}_{w,b}[\min_i\frac{y_i(w^Tx_i+b)}{||w||}]\ s.t.\ y_i(w^Tx_i+b)&gt;0
+\]</span>
+对于这个约束 <span class="math inline">\(y_i(w^Tx_i+b)&gt;0\)</span>，不妨固定 <span class="math inline">\(\min y_i(w^Tx_i+b)=1&gt;0\)</span>，这是由于分开两类的超平面的系数经过比例放缩不会改变这个平面，这也相当于给超平面的系数作出了约束。化简后的式子可以表示为：
+<span class="math display">\[
+\mathop{argmin}_{w,b}\frac{1}{2}w^Tw\ s.t.\ \min_iy_i(w^Tx_i+b)=1\\
+\Rightarrow\mathop{argmin}_{w,b}\frac{1}{2}w^Tw\ s.t.\ y_i(w^Tx_i+b)\ge1,i=1,2,\cdots,N
+\]</span>
+这就是一个包含 <span class="math inline">\(N\)</span> 个约束的凸优化问题，有很多求解这种问题的软件。</p>
+<p>但是，如果样本数量或维度非常高，直接求解困难甚至不可解，于是需要对这个问题进一步处理。引入 Lagrange 函数：
+<span class="math display">\[
+L(w,b,\lambda)=\frac{1}{2}w^Tw+\sum\limits_{i=1}^N\lambda_i(1-y_i(w^Tx_i+b))
+\]</span>
+我们有原问题就等价于：
+<span class="math display">\[
+\mathop{argmin}_{w,b}\max_{\lambda}L(w,b,\lambda_i)\ s.t.\ \lambda_i\ge0
+\]</span>
+我们交换最小和最大值的符号得到对偶问题：
+<span class="math display">\[
+\max_{\lambda_i}\min_{w,b}L(w,b,\lambda_i)\ s.t.\ \lambda_i\ge0
+\]</span>
+由于不等式约束是仿射函数，对偶问题和原问题等价：</p>
+<ul>
+<li><p><span class="math inline">\(b\)</span>：<span class="math inline">\(\frac{\partial}{\partial b}L=0\Rightarrow\sum\limits_{i=1}^N\lambda_iy_i=0\)</span></p></li>
+<li><p><span class="math inline">\(w\)</span>：首先将 <span class="math inline">\(b\)</span> 代入：
+<span class="math display">\[
+L(w,b,\lambda_i)=\frac{1}{2}w^Tw+\sum\limits_{i=1}^N\lambda_i(1-y_iw^Tx_i-y_ib)=\frac{1}{2}w^Tw+\sum\limits_{i=1}^N\lambda_i-\sum\limits_{i=1}^N\lambda_iy_iw^Tx_i
+\]</span>
+所以：
+<span class="math display">\[
+\frac{\partial}{\partial w}L=0\Rightarrow w=\sum\limits_{i=1}^N\lambda_iy_ix_i
+\]</span></p></li>
+<li><p>将上面两个参数代入：
+<span class="math display">\[
+L(w,b,\lambda_i)=-\frac{1}{2}\sum\limits_{i=1}^N\sum\limits_{j=1}^N\lambda_i\lambda_jy_iy_jx_i^Tx_j+\sum\limits_{i=1}^N\lambda_i
+\]</span></p></li>
+</ul>
+<p>因此，对偶问题就是：
+<span class="math display">\[
+\max_{\lambda}-\frac{1}{2}\sum\limits_{i=1}^N\sum\limits_{j=1}^N\lambda_i\lambda_jy_iy_jx_i^Tx_j+\sum\limits_{i=1}^N\lambda_i,\ s.t.\ \lambda_i\ge0
+\]</span>
+从 KKT 条件得到超平面的参数：</p>
+<blockquote>
+<p>原问题和对偶问题满足强对偶关系的充要条件为其满足 KKT 条件：
+<span class="math display">\[
+  \begin{align}
+  &amp;\frac{\partial L}{\partial w}=0,\frac{\partial L}{\partial b}=0
+  \\&amp;\lambda_k(1-y_k(w^Tx_k+b))=0(slackness\ complementary)\\
+  &amp;\lambda_i\ge0\\
+  &amp;1-y_i(w^Tx_i+b)\le0
+  \end{align}
+  \]</span></p>
+</blockquote>
+<p>根据这个条件就得到了对应的最佳参数：
+<span class="math display">\[
+\hat{w}=\sum\limits_{i=1}^N\lambda_iy_ix_i\\
+\hat{b}=y_k-w^Tx_k=y_k-\sum\limits_{i=1}^N\lambda_iy_ix_i^Tx_k,\exist k,1-y_k(w^Tx_k+b)=0
+\]</span>
+于是这个超平面的参数 <span class="math inline">\(w\)</span> 就是数据点的线性组合，最终的参数值就是部分满足 <span class="math inline">\(y_i(w^Tx_i+b)=1\)</span>向量的线性组合（互补松弛条件给出），这些向量也叫支撑向量。</p>
+</div>
+<div id="soft-margin-svm" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Soft-margin SVM<a href="支撑向量机.html#soft-margin-svm" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Hard-margin 的 SVM 只对可分数据可解，如果不可分的情况，我们的基本想法是在损失函数中加入错误分类的可能性。错误分类的个数可以写成：
+<span class="math display">\[
+error=\sum\limits_{i=1}^N\mathbb{I}\{y_i(w^Tx_i+b)\lt1\}
+\]</span>
+这个函数不连续，可以将其改写为：
+<span class="math display">\[
+error=\sum\limits_{i=1}^N\max\{0,1-y_i(w^Tx_i+b)\}
+\]</span>
+求和符号中的式子又叫做 Hinge Function。</p>
+<p>将这个错误加入 Hard-margin SVM 中，于是：
+<span class="math display">\[
+\mathop{argmin}_{w,b}\frac{1}{2}w^Tw+C\sum\limits_{i=1}^N\max\{0,1-y_i(w^Tx_i+b)\}\ s.t.\ y_i(w^Tx_i+b)\ge1-\xi_i,i=1,2,\cdots,N
+\]</span>
+这个式子中，常数 <span class="math inline">\(C\)</span> 可以看作允许的错误水平，同时上式为了进一步消除 <span class="math inline">\(\max\)</span> 符号，对数据集中的每一个观测，我们可以认为其大部分满足约束，但是其中部分违反约束，因此这部分约束变成 <span class="math inline">\(y_i(w^Tx+b)\ge1-\xi_i\)</span>，其中 <span class="math inline">\(\xi_i=1-y_i(w^Tx_i+b)\)</span>，进一步的化简：
+<span class="math display">\[
+\mathop{argmin}_{w,b}\frac{1}{2}w^Tw+C\sum\limits_{i=1}^N\xi_i\ s.t.\ y_i(w^Tx_i+b)\ge1-\xi_i,\xi_i\ge0,i=1,2,\cdots,N
+\]</span></p>
+</div>
+<div id="kernel-method" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> Kernel Method<a href="支撑向量机.html#kernel-method" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>核方法可以应用在很多问题上，在分类问题中，对于严格不可分问题，我们引入一个特征转换函数将原来的不可分的数据集变为可分的数据集，然后再来应用已有的模型。往往将低维空间的数据集变为高维空间的数据集后，数据会变得可分（数据变得更为稀疏）：</p>
+<blockquote>
+<p>Cover TH：高维空间比低维空间更易线性可分。</p>
+</blockquote>
+<p>应用在 SVM 中时，观察上面的 SVM 对偶问题：
+<span class="math display">\[
+\max_{\lambda}-\frac{1}{2}\sum\limits_{i=1}^N\sum\limits_{j=1}^N\lambda_i\lambda_jy_iy_jx_i^Tx_j+\sum\limits_{i=1}^N\lambda_i,\ s.t.\ \lambda_i\ge0
+\]</span>
+在求解的时候需要求得内积，于是不可分数据在通过特征变换后，需要求得变换后的内积。我们常常很难求得变换函数的内积。于是直接引入内积的变换函数：
+<span class="math display">\[
+\forall x,x&#39;\in\mathcal{X},\exist\phi\in\mathcal{H}:x\rightarrow z\ s.t.\ k(x,x&#39;)=\phi(x)^T\phi(x)
+\]</span>
+称 <span class="math inline">\(k(x,x&#39;)\)</span> 为一个正定核函数，其中<span class="math inline">\(\mathcal{H}\)</span> 是 Hilbert 空间（完备的线性内积空间），如果去掉内积这个条件我们简单地称为核函数。</p>
+<blockquote>
+<p><span class="math inline">\(k(x,x&#39;)=\exp(-\frac{(x-x&#39;)^2}{2\sigma^2})\)</span> 是一个核函数。</p>
+<p>证明：
+<span class="math display">\[
+  \begin{align}
+  \exp(-\frac{(x-x&#39;)^2}{2\sigma^2})&amp;=\exp(-\frac{x^2}{2\sigma^2})\exp(\frac{xx&#39;}{\sigma^2})\exp(-\frac{x&#39;^2}{2\sigma^2})\nonumber\\
+  &amp;=\exp(-\frac{x^2}{2\sigma^2})\sum\limits_{n=0}^{+\infin}\frac{x^nx&#39;^n}{\sigma^{2n}n!}\exp(-\frac{x&#39;^2}{2\sigma^2})\nonumber\\
+  &amp;=\exp(-\frac{x^2}{2\sigma^2})\varphi(x)\varphi(x&#39;)\exp(-\frac{x&#39;^2}{2\sigma^2})\nonumber\\
+  &amp;=\phi(x)\phi(x&#39;)
+  \end{align}
+  \]</span></p>
+</blockquote>
+<p>正定核函数有下面的等价定义：</p>
+<blockquote>
+<p>如果核函数满足：</p>
+<ol style="list-style-type: decimal">
+<li>对称性</li>
+<li>正定性</li>
+</ol>
+<p>那么这个核函数时正定核函数。</p>
+<p>证明：</p>
+<ol style="list-style-type: decimal">
+<li>对称性 <span class="math inline">\(\Leftrightarrow\)</span> <span class="math inline">\(k(x,z)=k(z,x)\)</span>，显然满足内积的定义</li>
+<li>正定性 <span class="math inline">\(\Leftrightarrow\)</span> <span class="math inline">\(\forall N,x_1,x_2,\cdots,x_N\in\mathcal{X}\)</span>，对应的 Gram Matrix <span class="math inline">\(K=[k(x_i,x_j)]\)</span> 是半正定的。</li>
+</ol>
+<p>要证：<span class="math inline">\(k(x,z)=\phi(x)^T\phi(z)\Leftrightarrow K\)</span> 半正定+对称性。</p>
+<ol style="list-style-type: decimal">
+<li><p><span class="math inline">\(\Rightarrow\)</span>：首先，对称性是显然的，对于正定性：
+<span class="math display">\[
+K=\begin{pmatrix}k(x_1,x_2)&amp;\cdots&amp;k(x_1,x_N)\\\vdots&amp;\vdots&amp;\vdots\\k(x_N,x_1)&amp;\cdots&amp;k(x_N,x_N)\end{pmatrix}
+\]</span>
+任意取 <span class="math inline">\(\alpha\in\mathbb{R}^N\)</span>，即需要证明 <span class="math inline">\(\alpha^TK\alpha\ge0\)</span>：
+<span class="math display">\[
+\alpha^TK\alpha=\sum\limits_{i,j}\alpha_i\alpha_jK_{ij}=\sum\limits_{i,j}\alpha_i\phi^T(x_i)\phi(x_j)\alpha_j=\sum\limits_{i}\alpha_i\phi^T(x_i)\sum\limits_{j}\alpha_j\phi(x_j)
+\]</span>
+这个式子就是内积的形式，Hilbert 空间满足线性性，于是正定性的证。</p></li>
+<li><p><span class="math inline">\(\Leftarrow\)</span>：对于 <span class="math inline">\(K\)</span> 进行分解，对于对称矩阵 <span class="math inline">\(K=V\Lambda V^T\)</span>，那么令 <span class="math inline">\(\phi(x_i)=\sqrt{\lambda_i}V_i\)</span>，其中 <span class="math inline">\(V_i\)</span>是特征向量，于是就构造了 <span class="math inline">\(k(x,z)=\sqrt{\lambda_i\lambda_j}V_i^TV_j\)</span></p></li>
+</ol>
+</blockquote>
+</div>
+<div id="小结-4" class="section level2 hasAnchor" number="6.5">
+<h2><span class="header-section-number">6.5</span> 小结<a href="支撑向量机.html#小结-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>分类问题在很长一段时间都依赖 SVM，对于严格可分的数据集，Hard-margin SVM 选定一个超平面，保证所有数据到这个超平面的距离最大，对这个平面施加约束，固定 <span class="math inline">\(y_i(w^Tx_i+b)=1\)</span>，得到了一个凸优化问题并且所有的约束条件都是仿射函数，于是满足 Slater 条件，将这个问题变换成为对偶的问题，可以得到等价的解，并求出约束参数：
+<span class="math display">\[
+\max_{\lambda}-\frac{1}{2}\sum\limits_{i=1}^N\sum\limits_{j=1}^N\lambda_i\lambda_jy_iy_jx_i^Tx_j+\sum\limits_{i=1}^N\lambda_i,\ s.t.\ \lambda_i\ge0
+\]</span>
+对需要的超平面参数的求解采用强对偶问题的 KKT 条件进行。
+<span class="math display">\[
+\begin{align}
+&amp;\frac{\partial L}{\partial w}=0,\frac{\partial L}{\partial b}=0
+\\&amp;\lambda_k(1-y_k(w^Tx_k+b))=0(slackness\ complementary)\\
+&amp;\lambda_i\ge0\\
+&amp;1-y_i(w^Tx_i+b)\le0
+\end{align}
+\]</span>
+解就是：
+<span class="math display">\[
+\hat{w}=\sum\limits_{i=1}^N\lambda_iy_ix_i\\
+\hat{b}=y_k-w^Tx_k=y_k-\sum\limits_{i=1}^N\lambda_iy_ix_i^Tx_k,\exist k,1-y_k(w^Tx_k+b)=0
+\]</span>
+当允许一点错误的时候，可以在 Hard-margin SVM 中加入错误项。用 Hinge Function 表示错误项的大小，得到：
+<span class="math display">\[
+\mathop{argmin}_{w,b}\frac{1}{2}w^Tw+C\sum\limits_{i=1}^N\xi_i\ s.t.\ y_i(w^Tx_i+b)\ge1-\xi_i,\xi_i\ge0,i=1,2,\cdots,N
+\]</span>
+对于完全不可分的问题，我们采用特征转换的方式，在 SVM 中，我们引入正定核函数来直接对内积进行变换，只要这个变换满足对称性和正定性，那么就可以用做核函数。</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="降维.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="指数族分布.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["CBook.pdf"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>8 概率图模型 | 机器学习白板系列</title>
+  <meta name="description" content="这是用R的bookdown功能制作中文图书的模板，输出格式为bookdown::gitbook和bookdown::pdf_book." />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="8 概率图模型 | 机器学习白板系列" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="这是用R的bookdown功能制作中文图书的模板，输出格式为bookdown::gitbook和bookdown::pdf_book." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="8 概率图模型 | 机器学习白板系列" />
+  
+  <meta name="twitter:description" content="这是用R的bookdown功能制作中文图书的模板，输出格式为bookdown::gitbook和bookdown::pdf_book." />
+  
+
+<meta name="author" content="庄闪闪" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="指数族分布.html"/>
+<link rel="next" href="期望最大.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX","output/SVG"],
+  extensions: ["tex2jax.js","MathMenu.js","MathZoom.js"],
+  TeX: {
+    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+  }
+});
+</script>
+<script type="text/javascript"
+   src="../../../MathJax/MathJax.js">
+</script>
+
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>简介</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="introduction.html"><a href="introduction.html#频率派的观点"><i class="fa fa-check"></i><b>1.1</b> 频率派的观点</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction.html"><a href="introduction.html#贝叶斯派的观点"><i class="fa fa-check"></i><b>1.2</b> 贝叶斯派的观点</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction.html"><a href="introduction.html#小结"><i class="fa fa-check"></i><b>1.3</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="mathbasics.html"><a href="mathbasics.html"><i class="fa fa-check"></i><b>2</b> MathBasics</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="mathbasics.html"><a href="mathbasics.html#高斯分布"><i class="fa fa-check"></i><b>2.1</b> 高斯分布</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="mathbasics.html"><a href="mathbasics.html#一维情况-mle"><i class="fa fa-check"></i><b>2.1.1</b> 一维情况 MLE</a></li>
+<li class="chapter" data-level="2.1.2" data-path="mathbasics.html"><a href="mathbasics.html#多维情况"><i class="fa fa-check"></i><b>2.1.2</b> 多维情况</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="线性回归.html"><a href="线性回归.html"><i class="fa fa-check"></i><b>3</b> 线性回归</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="线性回归.html"><a href="线性回归.html#最小二乘法"><i class="fa fa-check"></i><b>3.1</b> 最小二乘法</a></li>
+<li class="chapter" data-level="3.2" data-path="线性回归.html"><a href="线性回归.html#噪声为高斯分布的-mle"><i class="fa fa-check"></i><b>3.2</b> 噪声为高斯分布的 MLE</a></li>
+<li class="chapter" data-level="3.3" data-path="线性回归.html"><a href="线性回归.html#权重先验也为高斯分布的-map"><i class="fa fa-check"></i><b>3.3</b> 权重先验也为高斯分布的 MAP</a></li>
+<li class="chapter" data-level="3.4" data-path="线性回归.html"><a href="线性回归.html#正则化"><i class="fa fa-check"></i><b>3.4</b> 正则化</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="线性回归.html"><a href="线性回归.html#l1-lasso"><i class="fa fa-check"></i><b>3.4.1</b> L1 Lasso</a></li>
+<li class="chapter" data-level="3.4.2" data-path="线性回归.html"><a href="线性回归.html#l2-ridge"><i class="fa fa-check"></i><b>3.4.2</b> L2 Ridge</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="线性回归.html"><a href="线性回归.html#小结-1"><i class="fa fa-check"></i><b>3.5</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="线性分类.html"><a href="线性分类.html"><i class="fa fa-check"></i><b>4</b> 线性分类</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="线性分类.html"><a href="线性分类.html#两分类-硬分类-感知机算法"><i class="fa fa-check"></i><b>4.1</b> 两分类-硬分类-感知机算法</a></li>
+<li class="chapter" data-level="4.2" data-path="线性分类.html"><a href="线性分类.html#两分类-硬分类-线性判别分析-lda"><i class="fa fa-check"></i><b>4.2</b> 两分类-硬分类-线性判别分析 LDA</a></li>
+<li class="chapter" data-level="4.3" data-path="线性分类.html"><a href="线性分类.html#两分类-软分类-概率判别模型-logistic-回归"><i class="fa fa-check"></i><b>4.3</b> 两分类-软分类-概率判别模型-Logistic 回归</a></li>
+<li class="chapter" data-level="4.4" data-path="线性分类.html"><a href="线性分类.html#两分类-软分类-概率生成模型-高斯判别分析-gda"><i class="fa fa-check"></i><b>4.4</b> 两分类-软分类-概率生成模型-高斯判别分析 GDA</a></li>
+<li class="chapter" data-level="4.5" data-path="线性分类.html"><a href="线性分类.html#两分类-软分类-概率生成模型-朴素贝叶斯"><i class="fa fa-check"></i><b>4.5</b> 两分类-软分类-概率生成模型-朴素贝叶斯</a></li>
+<li class="chapter" data-level="4.6" data-path="线性分类.html"><a href="线性分类.html#小结-2"><i class="fa fa-check"></i><b>4.6</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="降维.html"><a href="降维.html"><i class="fa fa-check"></i><b>5</b> 降维</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="降维.html"><a href="降维.html#线性降维-主成分分析-pca"><i class="fa fa-check"></i><b>5.1</b> 线性降维-主成分分析 PCA</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="降维.html"><a href="降维.html#损失函数"><i class="fa fa-check"></i><b>5.1.1</b> 损失函数</a></li>
+<li class="chapter" data-level="5.1.2" data-path="降维.html"><a href="降维.html#svd-与-pcoa"><i class="fa fa-check"></i><b>5.1.2</b> SVD 与 PCoA</a></li>
+<li class="chapter" data-level="5.1.3" data-path="降维.html"><a href="降维.html#p-pca"><i class="fa fa-check"></i><b>5.1.3</b> p-PCA</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="降维.html"><a href="降维.html#小结-3"><i class="fa fa-check"></i><b>5.2</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="支撑向量机.html"><a href="支撑向量机.html"><i class="fa fa-check"></i><b>6</b> 支撑向量机</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="支撑向量机.html"><a href="支撑向量机.html#约束优化问题"><i class="fa fa-check"></i><b>6.1</b> 约束优化问题</a></li>
+<li class="chapter" data-level="6.2" data-path="支撑向量机.html"><a href="支撑向量机.html#hard-margin-svm"><i class="fa fa-check"></i><b>6.2</b> Hard-margin SVM</a></li>
+<li class="chapter" data-level="6.3" data-path="支撑向量机.html"><a href="支撑向量机.html#soft-margin-svm"><i class="fa fa-check"></i><b>6.3</b> Soft-margin SVM</a></li>
+<li class="chapter" data-level="6.4" data-path="支撑向量机.html"><a href="支撑向量机.html#kernel-method"><i class="fa fa-check"></i><b>6.4</b> Kernel Method</a></li>
+<li class="chapter" data-level="6.5" data-path="支撑向量机.html"><a href="支撑向量机.html#小结-4"><i class="fa fa-check"></i><b>6.5</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="指数族分布.html"><a href="指数族分布.html"><i class="fa fa-check"></i><b>7</b> 指数族分布</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="指数族分布.html"><a href="指数族分布.html#一维高斯分布"><i class="fa fa-check"></i><b>7.1</b> 一维高斯分布</a></li>
+<li class="chapter" data-level="7.2" data-path="指数族分布.html"><a href="指数族分布.html#充分统计量和对数配分函数的关系"><i class="fa fa-check"></i><b>7.2</b> 充分统计量和对数配分函数的关系</a></li>
+<li class="chapter" data-level="7.3" data-path="指数族分布.html"><a href="指数族分布.html#充分统计量和极大似然估计"><i class="fa fa-check"></i><b>7.3</b> 充分统计量和极大似然估计</a></li>
+<li class="chapter" data-level="7.4" data-path="指数族分布.html"><a href="指数族分布.html#最大熵"><i class="fa fa-check"></i><b>7.4</b> 最大熵</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="概率图模型.html"><a href="概率图模型.html"><i class="fa fa-check"></i><b>8</b> 概率图模型</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="概率图模型.html"><a href="概率图模型.html#有向图-贝叶斯网络"><i class="fa fa-check"></i><b>8.1</b> 有向图-贝叶斯网络</a></li>
+<li class="chapter" data-level="8.2" data-path="概率图模型.html"><a href="概率图模型.html#无向图-马尔可夫网络马尔可夫随机场"><i class="fa fa-check"></i><b>8.2</b> 无向图-马尔可夫网络（马尔可夫随机场）</a></li>
+<li class="chapter" data-level="8.3" data-path="概率图模型.html"><a href="概率图模型.html#两种图的转换-道德图"><i class="fa fa-check"></i><b>8.3</b> 两种图的转换-道德图</a></li>
+<li class="chapter" data-level="8.4" data-path="概率图模型.html"><a href="概率图模型.html#更精细的分解-因子图"><i class="fa fa-check"></i><b>8.4</b> 更精细的分解-因子图</a></li>
+<li class="chapter" data-level="8.5" data-path="概率图模型.html"><a href="概率图模型.html#推断"><i class="fa fa-check"></i><b>8.5</b> 推断</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="概率图模型.html"><a href="概率图模型.html#推断-变量消除ve"><i class="fa fa-check"></i><b>8.5.1</b> 推断-变量消除（VE）</a></li>
+<li class="chapter" data-level="8.5.2" data-path="概率图模型.html"><a href="概率图模型.html#推断-信念传播bp"><i class="fa fa-check"></i><b>8.5.2</b> 推断-信念传播（BP）</a></li>
+<li class="chapter" data-level="8.5.3" data-path="概率图模型.html"><a href="概率图模型.html#推断-max-product-算法"><i class="fa fa-check"></i><b>8.5.3</b> 推断-Max-Product 算法</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="期望最大.html"><a href="期望最大.html"><i class="fa fa-check"></i><b>9</b> 期望最大</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="期望最大.html"><a href="期望最大.html#广义-em"><i class="fa fa-check"></i><b>9.1</b> 广义 EM</a></li>
+<li class="chapter" data-level="9.2" data-path="期望最大.html"><a href="期望最大.html#em-的推广"><i class="fa fa-check"></i><b>9.2</b> EM 的推广</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="高斯混合模型.html"><a href="高斯混合模型.html"><i class="fa fa-check"></i><b>10</b> 高斯混合模型</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="高斯混合模型.html"><a href="高斯混合模型.html#极大似然估计"><i class="fa fa-check"></i><b>10.1</b> 极大似然估计</a></li>
+<li class="chapter" data-level="10.2" data-path="高斯混合模型.html"><a href="高斯混合模型.html#em-求解-gmm"><i class="fa fa-check"></i><b>10.2</b> EM 求解 GMM</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="变分推断.html"><a href="变分推断.html"><i class="fa fa-check"></i><b>11</b> 变分推断</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="变分推断.html"><a href="变分推断.html#基于平均场假设的变分推断"><i class="fa fa-check"></i><b>11.1</b> 基于平均场假设的变分推断</a></li>
+<li class="chapter" data-level="11.2" data-path="变分推断.html"><a href="变分推断.html#sgvi"><i class="fa fa-check"></i><b>11.2</b> SGVI</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html"><i class="fa fa-check"></i><b>12</b> 马尔可夫链蒙特卡洛</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#蒙特卡洛方法"><i class="fa fa-check"></i><b>12.1</b> 蒙特卡洛方法</a></li>
+<li class="chapter" data-level="12.2" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#mcmc"><i class="fa fa-check"></i><b>12.2</b> MCMC</a></li>
+<li class="chapter" data-level="12.3" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#平稳分布"><i class="fa fa-check"></i><b>12.3</b> 平稳分布</a></li>
+<li class="chapter" data-level="12.4" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#隐马尔可夫模型"><i class="fa fa-check"></i><b>12.4</b> 隐马尔可夫模型</a></li>
+<li class="chapter" data-level="12.5" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#hmm"><i class="fa fa-check"></i><b>12.5</b> HMM</a>
+<ul>
+<li class="chapter" data-level="12.5.1" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#evaluation"><i class="fa fa-check"></i><b>12.5.1</b> Evaluation</a></li>
+<li class="chapter" data-level="12.5.2" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#learning"><i class="fa fa-check"></i><b>12.5.2</b> Learning</a></li>
+<li class="chapter" data-level="12.5.3" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#decoding"><i class="fa fa-check"></i><b>12.5.3</b> Decoding</a></li>
+</ul></li>
+<li class="chapter" data-level="12.6" data-path="马尔可夫链蒙特卡洛.html"><a href="马尔可夫链蒙特卡洛.html#小结-5"><i class="fa fa-check"></i><b>12.6</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="线性动态系统.html"><a href="线性动态系统.html"><i class="fa fa-check"></i><b>13</b> 线性动态系统</a></li>
+<li class="chapter" data-level="14" data-path="粒子滤波.html"><a href="粒子滤波.html"><i class="fa fa-check"></i><b>14</b> 粒子滤波</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="粒子滤波.html"><a href="粒子滤波.html#sis"><i class="fa fa-check"></i><b>14.1</b> SIS</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="条件随机场.html"><a href="条件随机场.html"><i class="fa fa-check"></i><b>15</b> 条件随机场</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="条件随机场.html"><a href="条件随机场.html#crf-的-pdf"><i class="fa fa-check"></i><b>15.1</b> CRF 的 PDF</a></li>
+<li class="chapter" data-level="15.2" data-path="条件随机场.html"><a href="条件随机场.html#边缘概率"><i class="fa fa-check"></i><b>15.2</b> 边缘概率</a></li>
+<li class="chapter" data-level="15.3" data-path="条件随机场.html"><a href="条件随机场.html#参数估计"><i class="fa fa-check"></i><b>15.3</b> 参数估计</a></li>
+<li class="chapter" data-level="15.4" data-path="条件随机场.html"><a href="条件随机场.html#译码"><i class="fa fa-check"></i><b>15.4</b> 译码</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="高斯网络.html"><a href="高斯网络.html"><i class="fa fa-check"></i><b>16</b> 高斯网络</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="高斯网络.html"><a href="高斯网络.html#高斯贝叶斯网络-gbn"><i class="fa fa-check"></i><b>16.1</b> 高斯贝叶斯网络 GBN</a></li>
+<li class="chapter" data-level="16.2" data-path="高斯网络.html"><a href="高斯网络.html#高斯马尔可夫网络-gmn"><i class="fa fa-check"></i><b>16.2</b> 高斯马尔可夫网络 GMN</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="贝叶斯线性回归.html"><a href="贝叶斯线性回归.html"><i class="fa fa-check"></i><b>17</b> 贝叶斯线性回归</a>
+<ul>
+<li class="chapter" data-level="17.1" data-path="贝叶斯线性回归.html"><a href="贝叶斯线性回归.html#推断-1"><i class="fa fa-check"></i><b>17.1</b> 推断</a></li>
+<li class="chapter" data-level="17.2" data-path="贝叶斯线性回归.html"><a href="贝叶斯线性回归.html#预测"><i class="fa fa-check"></i><b>17.2</b> 预测</a></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="高斯过程回归.html"><a href="高斯过程回归.html"><i class="fa fa-check"></i><b>18</b> 高斯过程回归</a>
+<ul>
+<li class="chapter" data-level="18.1" data-path="高斯过程回归.html"><a href="高斯过程回归.html#核贝叶斯线性回归"><i class="fa fa-check"></i><b>18.1</b> 核贝叶斯线性回归</a></li>
+<li class="chapter" data-level="18.2" data-path="高斯过程回归.html"><a href="高斯过程回归.html#函数空间的观点"><i class="fa fa-check"></i><b>18.2</b> 函数空间的观点</a></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="受限玻尔兹曼机.html"><a href="受限玻尔兹曼机.html"><i class="fa fa-check"></i><b>19</b> 受限玻尔兹曼机</a>
+<ul>
+<li class="chapter" data-level="19.1" data-path="受限玻尔兹曼机.html"><a href="受限玻尔兹曼机.html#推断-2"><i class="fa fa-check"></i><b>19.1</b> 推断</a>
+<ul>
+<li class="chapter" data-level="19.1.1" data-path="受限玻尔兹曼机.html"><a href="受限玻尔兹曼机.html#phv"><i class="fa fa-check"></i><b>19.1.1</b> <span class="math inline">\(p(h|v)\)</span></a></li>
+<li class="chapter" data-level="19.1.2" data-path="受限玻尔兹曼机.html"><a href="受限玻尔兹曼机.html#pv"><i class="fa fa-check"></i><b>19.1.2</b> <span class="math inline">\(p(v)\)</span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="20" data-path="谱聚类.html"><a href="谱聚类.html"><i class="fa fa-check"></i><b>20</b> 谱聚类</a></li>
+<li class="chapter" data-level="21" data-path="前馈神经网络.html"><a href="前馈神经网络.html"><i class="fa fa-check"></i><b>21</b> 前馈神经网络</a>
+<ul>
+<li class="chapter" data-level="21.1" data-path="前馈神经网络.html"><a href="前馈神经网络.html#from-pla-to-dl"><i class="fa fa-check"></i><b>21.1</b> From PLA to DL</a></li>
+<li class="chapter" data-level="21.2" data-path="前馈神经网络.html"><a href="前馈神经网络.html#非线性问题"><i class="fa fa-check"></i><b>21.2</b> 非线性问题</a></li>
+</ul></li>
+<li class="chapter" data-level="22" data-path="配分函数.html"><a href="配分函数.html"><i class="fa fa-check"></i><b>22</b> 配分函数</a>
+<ul>
+<li class="chapter" data-level="22.1" data-path="配分函数.html"><a href="配分函数.html#包含配分函数的-mle"><i class="fa fa-check"></i><b>22.1</b> 包含配分函数的 MLE</a></li>
+<li class="chapter" data-level="22.2" data-path="配分函数.html"><a href="配分函数.html#对比散度-cd-learning"><i class="fa fa-check"></i><b>22.2</b> 对比散度-CD Learning</a></li>
+<li class="chapter" data-level="22.3" data-path="配分函数.html"><a href="配分函数.html#rbm-的学习问题"><i class="fa fa-check"></i><b>22.3</b> RBM 的学习问题</a></li>
+</ul></li>
+<li class="chapter" data-level="23" data-path="近似推断.html"><a href="近似推断.html"><i class="fa fa-check"></i><b>23</b> 近似推断</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">机器学习白板系列</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="概率图模型" class="section level1 hasAnchor" number="8">
+<h1><span class="header-section-number">8</span> 概率图模型<a href="概率图模型.html#概率图模型" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>概率图模型使用图的方式表示概率分布。为了在图中添加各种概率，首先总结一下随机变量分布的一些规则：
+<span class="math display">\[
+\begin{align}
+&amp;Sum\ Rule:p(x_1)=\int p(x_1,x_2)dx_2\\
+&amp;Product\ Rule:p(x_1,x_2)=p(x_1|x_2)p(x_2)\\
+&amp;Chain\ Rule:p(x_1,x_2,\cdots,x_p)=\prod\limits_{i=1}^pp(x_i|x_{i+1,x_{i+2} \cdots}x_p)\\
+&amp;Bayesian\ Rule:p(x_1|x_2)=\frac{p(x_2|x_1)p(x_1)}{p(x_2)}
+\end{align}
+\]</span>
+可以看到，在链式法则中，如果数据维度特别高，那么的采样和计算非常困难，我们需要在一定程度上作出简化，在朴素贝叶斯中，作出了条件独立性假设。在 Markov 假设中，给定数据的维度是以时间顺序出现的，给定当前时间的维度，那么下一个维度与之前的维度独立。在 HMM 中，采用了齐次 Markov 假设。在 Markov 假设之上，更一般的，加入条件独立性假设，对维度划分集合 <span class="math inline">\(A,B,C\)</span>，使得 <span class="math inline">\(X_A\perp X_B|X_C\)</span>。</p>
+<p>概率图模型采用图的特点表示上述的条件独立性假设，节点表示随机变量，边表示条件概率。概率图模型可以分为三大理论部分：</p>
+<ol style="list-style-type: decimal">
+<li>表示：
+<ol style="list-style-type: decimal">
+<li>有向图（离散）：贝叶斯网络</li>
+<li>高斯图（连续）：高斯贝叶斯和高斯马尔可夫网路</li>
+<li>无向图（离散）：马尔可夫网络</li>
+</ol></li>
+<li>推断
+<ol style="list-style-type: decimal">
+<li>精确推断</li>
+<li>近似推断
+<ol style="list-style-type: decimal">
+<li>确定性近似（如变分推断）</li>
+<li>随机近似（如 MCMC）</li>
+</ol></li>
+</ol></li>
+<li>学习
+<ol style="list-style-type: decimal">
+<li>参数学习
+<ol style="list-style-type: decimal">
+<li>完备数据</li>
+<li>隐变量：E-M 算法</li>
+</ol></li>
+<li>结构学习</li>
+</ol></li>
+</ol>
+<div id="有向图-贝叶斯网络" class="section level2 hasAnchor" number="8.1">
+<h2><span class="header-section-number">8.1</span> 有向图-贝叶斯网络<a href="概率图模型.html#有向图-贝叶斯网络" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>已知联合分布中，各个随机变量之间的依赖关系，那么可以通过拓扑排序（根据依赖关系）可以获得一个有向图。而如果已知一个图，也可以直接得到联合概率分布的因子分解：
+<span class="math display">\[
+p(x_1,x_2,\cdots,x_p)=\prod\limits_{i=1}^pp(x_i|x_{parent(i)})
+\]</span>
+那么实际的图中条件独立性是如何体现的呢？在局部任何三个节点，可以有三种结构：</p>
+<ol style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="mermaid"><code>    graph TB;
+        A((A))--&gt;B((B));
+        B--&gt;C((C));</code></pre>
+<p><span class="math display">\[
+    p(A,B,C)=p(A)p(B|A)p(C|B)=p(A)p(B|A)p(C|B,A)\\
+    \Longrightarrow p(C|B)=p(C|B,A)\\
+    \Leftrightarrow p(C|B)p(A|B)=p(C|A,B)p(A|B)=p(C,A|B)\\
+    \Longrightarrow C\perp A|B
+\]</span></p>
+<ol start="2" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="mermaid"><code>    graph TB;
+        B((B))--&gt;A((A));
+        B--&gt;C((C));</code></pre>
+<p><span class="math display">\[
+    p(A,B,C)=p(A|B)p(B)p(C|B)=p(B)p(A|B)p(C|A,B)\\
+    \Longrightarrow p(C|B)=p(C|B,A)\\
+    \Leftrightarrow p(C|B)p(A|B)=p(C|A,B)p(A|B)=p(C,A|B)\\
+    \Longrightarrow C\perp A|B
+\]</span></p>
+<ol start="3" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="mermaid"><code>    graph TB;
+        A((A))--&gt;B((B));
+        C((C))--&gt;B</code></pre>
+<p><span class="math display">\[
+    p(A,B,C)=p(A)p(C)p(B|C,A)=p(A)p(C|A)p(B|C,A)\\
+    \Longrightarrow p(C)=p(C|A)\\
+    \Leftrightarrow C\perp A\\
+\]</span></p>
+<p>对这种结构，<span class="math inline">\(A,C\)</span> 不与 <span class="math inline">\(B\)</span> 条件独立。</p>
+<p>从整体的图来看，可以引入 D 划分的概念。对于类似上面图 1和图 2的关系，引入集合A，B，那么满足 <span class="math inline">\(A\perp B|C\)</span> 的 <span class="math inline">\(C\)</span> 集合中的点与 <span class="math inline">\(A,B\)</span> 中的点的关系都满足图 1，2，满足图3 关系的点都不在 <span class="math inline">\(C\)</span> 中。D 划分应用在贝叶斯定理中：
+<span class="math display">\[
+p(x_i|x_{-i})=\frac{p(x)}{\int p(x)dx_{i}}=\frac{\prod\limits_{j=1}^pp(x_j|x_{parents(j)})}{\int\prod\limits_{j=1}^pp(x_j|x_{parents(j)})dx_i}
+\]</span>
+可以发现，上下部分可以分为两部分，一部分是和 <span class="math inline">\(x_i\)</span> 相关的，另一部分是和 <span class="math inline">\(x_i\)</span> 无关的，而这个无关的部分可以相互约掉。于是计算只涉及和 <span class="math inline">\(x_i\)</span> 相关的部分。</p>
+<p>与 <span class="math inline">\(x_i\)</span> 相关的部分可以写成：
+<span class="math display">\[
+p(x_i|x_{parents(i)})p(x_{child(i)}|x_i)
+\]</span>
+这些相关的部分又叫做 Markov 毯。</p>
+<p>实际应用的模型中，对这些条件独立性作出了假设，从单一到混合，从有限到无限（时间，空间）可以分为：</p>
+<ol style="list-style-type: decimal">
+<li>朴素贝叶斯，单一的条件独立性假设 <span class="math inline">\(p(x|y)=\prod\limits_{i=1}^pp(x_i|y)\)</span>，在 D 划分后，所有条件依赖的集合就是单个元素。</li>
+<li>高斯混合模型：混合的条件独立。引入多类别的隐变量 <span class="math inline">\(z_1, z_2,\cdots,z_k\)</span>， <span class="math inline">\(p(x|z)=\mathcal{N}(\mu,\Sigma)\)</span>，条件依赖集合为多个元素。</li>
+<li>与时间相关的条件依赖
+<ol style="list-style-type: decimal">
+<li>Markov 链</li>
+<li>高斯过程（无限维高斯分布）</li>
+</ol></li>
+<li>连续：高斯贝叶斯网络</li>
+<li>组合上面的分类
+<ul>
+<li>GMM 与时序结合：动态模型
+<ul>
+<li>HMM（离散）</li>
+<li>线性动态系统 LDS（Kalman 滤波）</li>
+<li>粒子滤波（非高斯，非线性）</li>
+</ul></li>
+</ul></li>
+</ol>
+</div>
+<div id="无向图-马尔可夫网络马尔可夫随机场" class="section level2 hasAnchor" number="8.2">
+<h2><span class="header-section-number">8.2</span> 无向图-马尔可夫网络（马尔可夫随机场）<a href="概率图模型.html#无向图-马尔可夫网络马尔可夫随机场" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>无向图没有了类似有向图的局部不同结构，在马尔可夫网络中，也存在 D 划分的概念。直接将条件独立的集合 <span class="math inline">\(x_A\perp x_B|x_C\)</span> 划分为三个集合。这个也叫全局 Markov。对局部的节点，<span class="math inline">\(x\perp (X-Neighbour(\mathcal{x}))|Neighbour(x)\)</span>。这也叫局部 Markov。对于成对的节点：<span class="math inline">\(x_i\perp x_j|x_{-i-j}\)</span>，其中 <span class="math inline">\(i,j\)</span> 不能相邻。这也叫成对 Markov。事实上上面三个点局部全局成对是相互等价的。</p>
+<p>有了这个条件独立性的划分，还需要因子分解来实际计算。引入团的概念：</p>
+<blockquote>
+<p>团，最大团：图中节点的集合，集合中的节点之间相互都是连接的叫做团，如果不能再添加节点，那么叫最大团。</p>
+</blockquote>
+<p>利用这个定义进行的 <span class="math inline">\(x\)</span> 所有维度的联合概率分布的因子分解为，假设有 <span class="math inline">\(K\)</span> 个团，<span class="math inline">\(Z\)</span> 就是对所有可能取值求和：
+<span class="math display">\[
+\begin{align}p(x)=\frac{1}{Z}\prod\limits_{i=1}^{K}\phi(x_{ci})\\
+Z=\sum\limits_{x\in\mathcal{X}}\prod\limits_{i=1}^{K}\phi(x_{ci})
+\end{align}
+\]</span>
+其中 <span class="math inline">\(\phi(x_{ci})\)</span> 叫做势函数，它必须是一个正值，可以记为：
+<span class="math display">\[
+\phi(x_{ci})=\exp(-E(x_{ci}))
+\]</span>
+这个分布叫做 Gibbs 分布（玻尔兹曼分布）。于是也可以记为：<span class="math inline">\(p(x)=\frac{1}{Z}\exp(-\sum\limits_{i=1}^KE(x_{ci}))\)</span>。这个分解和条件独立性等价（Hammesley-Clifford 定理），这个分布的形式也和指数族分布形式上相同，于是满足最大熵原理。</p>
+</div>
+<div id="两种图的转换-道德图" class="section level2 hasAnchor" number="8.3">
+<h2><span class="header-section-number">8.3</span> 两种图的转换-道德图<a href="概率图模型.html#两种图的转换-道德图" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>我们常常想将有向图转为无向图，从而应用更一般的表达式。</p>
+<ol style="list-style-type: decimal">
+<li>链式：</li>
+</ol>
+<pre class="mermaid"><code>    graph TB;
+        A((A))--&gt;B((B));
+        B--&gt;C((C));</code></pre>
+<p>直接去掉箭头，<span class="math inline">\(p(a,b,c)=p(a)p(b|a)p(c|b)=\phi(a,b)\phi(b,c)\)</span>：</p>
+<pre class="mermaid"><code>    graph TB;
+        A((A))---B((B));
+        B---C((C));</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li><p>V 形：</p>
+<pre class="mermaid"><code>graph TB;
+    B((B))--&gt;A((A));
+    B--&gt;C((C));</code></pre>
+<p>由于 <span class="math inline">\(p(a,b,c)=p(b)p(a|b)p(c|b)=\phi(a,b)\phi(b,c)\)</span>，直接去掉箭头：</p>
+<pre class="mermaid"><code>graph TB;
+    B((B))---A((A));
+    B---C((C));</code></pre></li>
+<li><p>倒 V 形：</p>
+<pre class="mermaid"><code>graph TB;
+    A((A))--&gt;B((B));
+    C((C))--&gt;B</code></pre>
+<p>由于 <span class="math inline">\(p(a,b,c)=p(a)p(c)p(b|a,c)=\phi(a,b,c)\)</span>，于是在 <span class="math inline">\(a,c\)</span> 之间添加线：</p>
+<pre class="mermaid"><code>graph TD;
+    a((a))---b((b));
+    b---c((c));
+    a---c;</code></pre>
+<p>观察着三种情况可以概括为：</p>
+<ol style="list-style-type: decimal">
+<li>将每个节点的父节点两两相连</li>
+<li>将有向边替换为无向边</li>
+</ol></li>
+</ol>
+</div>
+<div id="更精细的分解-因子图" class="section level2 hasAnchor" number="8.4">
+<h2><span class="header-section-number">8.4</span> 更精细的分解-因子图<a href="概率图模型.html#更精细的分解-因子图" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>对于一个有向图，可以通过引入环的方式，可以将其转换为无向图（Tree-like graph），这个图就叫做道德图。但是我们上面的 BP 算法只对无环图有效，通过因子图可以变为无环图。</p>
+<p>考虑一个无向图：</p>
+<pre class="mermaid"><code>graph TD;
+    a((a))---b((b));
+    b---c((c));
+    a---c;</code></pre>
+<p>可以将其转为：</p>
+<pre class="mermaid"><code>graph TD;
+    a((a))---f;
+    f---b((b));
+    f---c((c))</code></pre>
+<p>其中 <span class="math inline">\(f=f(a,b,c)\)</span>。因子图不是唯一的，这是由于因式分解本身就对应一个特殊的因子图，将因式分解：<span class="math inline">\(p(x)=\prod\limits_{s}f_s(x_s)\)</span> 可以进一步分解得到因子图。</p>
+</div>
+<div id="推断" class="section level2 hasAnchor" number="8.5">
+<h2><span class="header-section-number">8.5</span> 推断<a href="概率图模型.html#推断" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>推断的主要目的是求各种概率分布，包括边缘概率，条件概率，以及使用 MAP 来求得参数。通常推断可以分为：</p>
+<ol style="list-style-type: decimal">
+<li>精确推断
+<ol style="list-style-type: decimal">
+<li>Variable Elimination(VE)</li>
+<li>Belief Propagation(BP, Sum-Product Algo)，从 VE 发展而来</li>
+<li>Junction Tree，上面两种在树结构上应用，Junction Tree 在图结构上应用</li>
+</ol></li>
+<li>近似推断
+<ol style="list-style-type: decimal">
+<li>Loop Belief Propagation（针对有环图）</li>
+<li>Mente Carlo Interference：例如 Importance Sampling，MCMC</li>
+<li>Variational Inference</li>
+</ol></li>
+</ol>
+<div id="推断-变量消除ve" class="section level3 hasAnchor" number="8.5.1">
+<h3><span class="header-section-number">8.5.1</span> 推断-变量消除（VE）<a href="概率图模型.html#推断-变量消除ve" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>变量消除的方法是在求解概率分布的时候，将相关的条件概率先行求和或积分，从而一步步地消除变量，例如在马尔可夫链中：</p>
+<pre class="mermaid"><code>graph LR;
+    a((a))--&gt;b((b));
+    b--&gt;c((c));
+    c--&gt;d((d))</code></pre>
+<p><span class="math display">\[
+p(d)=\sum\limits_{a,b,c}p(a,b,c,d)=\sum\limits_cp(d|c)\sum\limits_bp(c|b)\sum\limits_ap(b|a)p(a)
+\]</span></p>
+<p>变量消除的缺点很明显：</p>
+<ol style="list-style-type: decimal">
+<li>计算步骤无法存储</li>
+<li>消除的最优次序是一个 NP-hard 问题</li>
+</ol>
+</div>
+<div id="推断-信念传播bp" class="section level3 hasAnchor" number="8.5.2">
+<h3><span class="header-section-number">8.5.2</span> 推断-信念传播（BP）<a href="概率图模型.html#推断-信念传播bp" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>为了克服 VE 的第一个缺陷-计算步骤无法存储。我们进一步地对上面的马尔可夫链进行观察：</p>
+<pre class="mermaid"><code>graph LR;
+    a((a))--&gt;b((b));
+    b--&gt;c((c));
+    c--&gt;d((d));
+    d--&gt;e((e));</code></pre>
+<p>要求 <span class="math inline">\(p(e)\)</span>，当然使用 VE，从 <span class="math inline">\(a\)</span> 一直消除到 <span class="math inline">\(d\)</span>，记 <span class="math inline">\(\sum\limits_ap(a)p(b|a)=m_{a\to b(b)}\)</span>，表示这是消除 <span class="math inline">\(a\)</span> 后的关于 <span class="math inline">\(b\)</span> 的概率，类似地，记 <span class="math inline">\(\sum\limits_bp(c|b)m_{a\to b}(b)=m_{b\to c}(c)\)</span>。于是 <span class="math inline">\(p(e)=\sum\limits_dp(e|d)m_{b\to c}(c)\)</span>。进一步观察，对 <span class="math inline">\(p(c)\)</span>：
+<span class="math display">\[
+p(c)=[\sum\limits_bp(c|b)\sum\limits_ap(b|a)p(a)]\cdot[\sum\limits_dp(d|c)\sum\limits_ep(e)p(e|d)]
+\]</span>
+我们发现了和上面计算 <span class="math inline">\(p(e)\)</span> 类似的结构，这个式子可以分成两个部分，一部分是从 <span class="math inline">\(a\)</span> 传播过来的概率，第二部分是从 $ e$ 传播过来的概率。</p>
+<p>一般地，对于图（只对树形状的图）：</p>
+<pre class="mermaid"><code>graph TD;
+    a((a))---b((b));
+    b---c((c));
+    b---d((d));</code></pre>
+<p>这四个团（对于无向图是团，对于有向图就是概率为除了根的节点为1），有四个节点，三个边：
+<span class="math display">\[
+p(a,b,c,d)=\frac{1}{Z}\phi_a(a)\phi_b(b)\phi_c(c)\phi_d(d)\cdot\phi_{ab}(a,b)\phi_{bc}(c,b)\phi_{bd}(d,b)
+\]</span>
+套用上面关于有向图的观察，如果求解边缘概率 <span class="math inline">\(p(a)\)</span>，定义 <span class="math inline">\(m_{c\to b}(b)=\sum\limits_c\phi_c(c)\phi_{bc}(bc)\)</span>，<span class="math inline">\(m_{d\to b}(b)=\sum\limits_d\phi_d(d)\phi_{bd}(bd)\)</span>，<span class="math inline">\(m_{b\to a}(a)=\sum\limits_b\phi_{ba}(ba)\phi_b(b)m_{c\to b}(b)_{d\to b}m(b)\)</span>，这样概率就一步步地传播到了 <span class="math inline">\(a\)</span>：
+<span class="math display">\[
+p(a)=\phi_a(a)m_{b\to a}(a)
+\]</span>
+写成一般的形式，对于相邻节点 <span class="math inline">\(i,j\)</span>：
+<span class="math display">\[
+m_{j\to i}(i)=\sum\limits_j\phi_j(j)\phi_{ij}(ij)\prod\limits_{k\in Neighbour(j)-i}m_{k\to j}(j)
+\]</span>
+这个表达式，就可以保存计算过程了，只要对每条边的传播分别计算，对于一个无向树形图可以递归并行实现：</p>
+<ol style="list-style-type: decimal">
+<li>任取一个节点 <span class="math inline">\(a\)</span> 作为根节点</li>
+<li>对这个根节点的邻居中的每一个节点，收集信息（计算入信息）</li>
+<li>对根节点的邻居，分发信息（计算出信息）</li>
+</ol>
+</div>
+<div id="推断-max-product-算法" class="section level3 hasAnchor" number="8.5.3">
+<h3><span class="header-section-number">8.5.3</span> 推断-Max-Product 算法<a href="概率图模型.html#推断-max-product-算法" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>在推断任务中，MAP 也是常常需要的，MAP 的目的是寻找最佳参数：
+<span class="math display">\[
+(\hat{a},\hat{b},\hat{c},\hat{d})=\mathop{argmax}_{a,b,c,d}p(a,b,c,d|E)
+\]</span>
+类似 BP，我们采用信息传递的方式来求得最优参数，不同的是，我们在所有信息传递中，传递的是最大化参数的概率，而不是将所有可能求和：
+<span class="math display">\[
+m_{j\to i}=\max\limits_{j}\phi_j\phi_{ij}\prod\limits_{k\in Neighbour(j)-i}m_{k\to j}
+\]</span>
+于是对于上面的图：
+<span class="math display">\[
+\max_a p(a,b,c,d)=\max_a\phi_a\phi_{ab}m_{c\to b}m_{d\to b}
+\]</span>
+这个算法是 Sum-Product 算法的改进，也是在 HMM 中应用给的 Viterbi 算法的推广。</p>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="指数族分布.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="期望最大.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["CBook.pdf"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
