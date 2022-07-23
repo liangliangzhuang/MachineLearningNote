@@ -14,13 +14,13 @@ link-citations: yes
 
 # 简介 {-}
 
+本仓库内容来源于：https://github.com/tsyw/MachineLearningNotes
 
+为了方便观看和学习，我使用bookdown进行重新排版，并部署到网上，方便大家学习。
 
-```r
-plot(1:10)
-```
+阅读地址：https://liangliangzhuang.github.io/MachineLearningNote/index.html
 
-![](index_files/figure-latex/unnamed-chunk-1-1.pdf)<!-- --> 
+参考： https://www.bilibili.com/video/av70839977?from=search&seid=17463814830541838470
 
 
 
