@@ -20,7 +20,7 @@ link-citations: yes
 plot(1:10)
 ```
 
-<img src="index_files/figure-html/unnamed-chunk-1-1.png" width="672" />
+![](index_files/figure-latex/unnamed-chunk-1-1.pdf)<!-- --> 
 
 
 
